@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, router } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
+
+
 
 export default function Index({ comprobantes, filters }) {
     const [search, setSearch] = useState(filters.search || '');
@@ -69,12 +72,14 @@ export default function Index({ comprobantes, filters }) {
                                         <th className="px-4 py-3 text-left font-medium text-gray-500">Total</th>
                                         <th className="px-4 py-3 text-left font-medium text-gray-500">Estado SRI</th>
                                         <th className="px-4 py-3 text-left font-medium text-gray-500">Mensajes / Errores</th>
+                                        <th className="px-4 py-3 text-center font-medium text-gray-500">Acciones</th>
+
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-200">
                                     {comprobantes.data.map((c) => (
                                         <tr key={c.id}>
-                                            <td className="px-4 py-3 font-medium">{c.establecimiento}-{c.punto_emision}-{c.secuencial}</td>
+                                            <td className="px-4 py-3 font-medium">{c.establecimiento}-{c.punto_emision}-{c.secuencial}: 'N/A'</td>
                                             <td className="px-4 py-3">{c.cliente?.razon_social || 'N/A'}</td>
                                             <td className="px-4 py-3">{c.fecha_emision}</td>
                                             <td className="px-4 py-3 font-bold">${c.importe_total}</td>
@@ -82,7 +87,27 @@ export default function Index({ comprobantes, filters }) {
                                             <td className="px-4 py-3 text-xs text-red-600 max-w-xs truncate" title={c.mensajes_sri}>
                                                 {c.mensajes_sri ? JSON.parse(c.mensajes_sri).join(', ') : '-'}
                                             </td>
+                                            {/* Cambiarlo cuadno tenga ya la firma electronica                                   <td className="px-4 py-3 text-center">
+    {c.tipo_comprobante === '01' && c.estado_sri?.toUpperCase() === 'AUTORIZADO' && (
+        <Link
+            href={route('notas-credito.create', { factura: c.id })}
+            className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200"
+        >
+            Nota de Crédito
+        </Link>
+    )}
+</td>*/}
+{/* Muestra el botón a todas las facturas sin importar si fueron autorizadas o no */}
+<td className="px-4 py-3 text-center">
+    <Link
+        href={route('notas-credito.create', { factura: c.id })}
+        className="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200"
+    >
+        Nota de Crédito
+    </Link>
+</td>
                                         </tr>
+
                                     ))}
                                 </tbody>
                             </table>

@@ -32,7 +32,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                     Dashboard
                                 </NavLink>
                             </div>
-                             <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink
                                     href={route('facturas.create')}
                                     active={route().current('facturas.create')}
@@ -40,7 +40,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                     facturas
                                 </NavLink>
                             </div>
-                             <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink
                                     href={route('facturas.index')}
                                     active={route().current('facturas.index')}
@@ -48,8 +48,8 @@ export default function AuthenticatedLayout({ header, children }) {
                                     facturas emitidas
                                 </NavLink>
                             </div>
-                           
-                              <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+
+                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink
                                     href={route('clientes.index')}
                                     active={route().current('clientes.index')}
@@ -57,7 +57,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                     Clientes
                                 </NavLink>
                             </div>
-                             <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink
                                     href={route('emisor.index')}
                                     active={route().current('emisor.index')}
@@ -65,6 +65,8 @@ export default function AuthenticatedLayout({ header, children }) {
                                     Emisor
                                 </NavLink>
                             </div>
+                            
+
                         </div>
 
                         <div className="hidden sm:ms-6 sm:flex sm:items-center">

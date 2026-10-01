@@ -15,6 +15,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('emisor_id')->constrained('emisors');
             $table->foreignId('cliente_id')->constrained('clientes');
+            // Factura que modifica esta nota de crédito (solo tipo 04)
+            $table->foreignId('comprobante_modificado_id')
+                ->nullable()
+                ->constrained('comprobantes')
+                ->nullOnDelete();
 
             $table->string('tipo_comprobante', 2); // 01: Factura, 04: Nota Crédito, 07: Retención, etc.[cite: 4]
             $table->string('establecimiento', 3); // [cite: 4]
@@ -28,6 +33,7 @@ return new class extends Migration
             $table->decimal('subtotal_0', 12, 2)->default(0.00);  // Base IVA 0% (código 0)[cite: 4]
             $table->decimal('monto_iva', 12, 2)->default(0.00);
             $table->decimal('propina', 12, 2)->default(0.00);
+            $table->string('motivo', 300)->nullable(); // Motivo de la nota de crédito
             $table->decimal('importe_total', 12, 2); // [cite: 4]
 
             // Trazabilidad y respuesta Web Service SRI
