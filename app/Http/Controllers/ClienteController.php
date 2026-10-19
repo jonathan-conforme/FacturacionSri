@@ -42,7 +42,7 @@ class ClienteController extends Controller
     {
         $this->clienteService->crearCliente($request->validated());
 
-        return redirect()->route('clientes.create')->with('success', 'Cliente registrado correctamente.');
+        return redirect()->route('clientes.index')->with('success', 'Cliente registrado correctamente.');
     }
 
     /**

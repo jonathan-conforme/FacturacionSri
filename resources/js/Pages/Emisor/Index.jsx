@@ -3,6 +3,66 @@ import FlashMessages from '@/Components/FlashMessages';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 
+import { Button } from '@/Components/ui/button';
+import { Input } from '@/Components/ui/input';
+import { Label } from '@/Components/ui/label';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/Components/ui/card';
+
+import {
+    BadgeCheck,
+    BookOpen,
+    Building2,
+    CheckCircle2,
+    ChevronDown,
+    FileKey,
+    FlaskConical,
+    Hash,
+    IdCard,
+    KeyRound,
+    Loader2,
+    MapPin,
+    Receipt,
+    Save,
+    Settings2,
+    ShieldCheck,
+    Store,
+    Warehouse,
+    Cpu,
+    Landmark,
+} from 'lucide-react';
+
+/* ---------- Solo presentación ---------- */
+const Seccion = ({ icon: Icon, title, description, children }) => (
+    <Card className="gap-0 overflow-hidden border-border/60 py-0 shadow-sm">
+        <CardHeader className="gap-1 bg-primary px-6 py-4 text-primary-foreground">
+            <CardTitle className="flex items-center gap-2 text-base">
+                <Icon className="size-5 text-border" />
+                {title}
+            </CardTitle>
+            {description && (
+                <CardDescription className="text-primary-foreground/80">{description}</CardDescription>
+            )}
+        </CardHeader>
+        <CardContent className="p-6">{children}</CardContent>
+    </Card>
+);
+
+const Campo = ({ label, icon: Icon, error, className = '', children }) => (
+    <div className={`space-y-2 ${className}`}>
+        <Label className="text-primary">{label}</Label>
+        <div className="relative">
+            <Icon className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-border" />
+            {children}
+        </div>
+        {error && <p className="mt-1 text-sm text-destructive">{error}</p>}
+    </div>
+);
+
+const selectClass =
+    'h-9 w-full appearance-none rounded-md border border-input bg-white pl-9 pr-9 text-sm text-primary shadow-xs outline-none transition focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50';
+
+const inputClass = 'pl-9 text-primary';
+
 export default function Index({ emisor }) {
     // Definimos el formulario con los datos iniciales si ya existe un Emisor
     const { data, setData, post, put, processing, errors } = useForm({
@@ -38,200 +98,217 @@ export default function Index({ emisor }) {
 
     return (
         <AuthenticatedLayout
-            header={<h2 className="text-xl font-semibold leading-tight text-gray-800">Configuración del Emisor (SRI)</h2>}
+            header={
+                <div className="flex items-center gap-3">
+                    <span className="grid size-10 place-items-center rounded-xl bg-secondary text-primary">
+                        <Landmark className="size-5" />
+                    </span>
+                    <h2 className="text-xl font-semibold leading-tight text-primary">Configuración del Emisor (SRI)</h2>
+                </div>
+            }
         >
             <Head title="Configuración de Emisor" />
 
-            <div className="py-12">
+            <div className="min-h-screen bg-secondary/40 py-10">
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="bg-white p-6 shadow-sm sm:rounded-lg">
-                        <form onSubmit={handleSubmit} className="space-y-6">
+                    <form onSubmit={handleSubmit} className="space-y-6">
 
-                            {/* SECCIÓN 1: DATOS DE LA EMPRESA */}
-                            <div>
-                                <h3 className="text-lg font-medium text-gray-900 border-b pb-2 mb-4">
-                                    Información General
-                                </h3>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700">RUC *</label>
-                                        <input
-                                            type="text"
-                                            value={data.ruc}
-                                            maxLength={13}
-                                            onChange={(e) => setData('ruc', e.target.value)}
-                                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                            required
-                                        />
-                                        {errors.ruc && <p className="text-sm text-red-600 mt-1">{errors.ruc}</p>}
-                                    </div>
+                        {/* SECCIÓN 1: DATOS DE LA EMPRESA */}
+                        <Seccion
+                            icon={Building2}
+                            title="Información General"
+                            description="Datos legales de tu empresa registrados en el SRI."
+                        >
+                            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                                <Campo label="RUC *" icon={IdCard} error={errors.ruc}>
+                                    <Input
+                                        type="text"
+                                        value={data.ruc}
+                                        maxLength={13}
+                                        onChange={(e) => setData('ruc', e.target.value)}
+                                        className={inputClass}
+                                        required
+                                    />
+                                </Campo>
 
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700">Razón Social *</label>
-                                        <input
-                                            type="text"
-                                            value={data.razon_social}
-                                            onChange={(e) => setData('razon_social', e.target.value)}
-                                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                            required
-                                        />
-                                        {errors.razon_social && <p className="text-sm text-red-600 mt-1">{errors.razon_social}</p>}
-                                    </div>
+                                <Campo label="Razón Social *" icon={Building2} error={errors.razon_social}>
+                                    <Input
+                                        type="text"
+                                        value={data.razon_social}
+                                        onChange={(e) => setData('razon_social', e.target.value)}
+                                        className={inputClass}
+                                        required
+                                    />
+                                </Campo>
 
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700">Nombre Comercial</label>
-                                        <input
-                                            type="text"
-                                            value={data.nombre_comercial}
-                                            onChange={(e) => setData('nombre_comercial', e.target.value)}
-                                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                        />
-                                        {errors.nombre_comercial && <p className="text-sm text-red-600 mt-1">{errors.nombre_comercial}</p>}
-                                    </div>
+                                <Campo label="Nombre Comercial" icon={Store} error={errors.nombre_comercial}>
+                                    <Input
+                                        type="text"
+                                        value={data.nombre_comercial}
+                                        onChange={(e) => setData('nombre_comercial', e.target.value)}
+                                        className={inputClass}
+                                    />
+                                </Campo>
 
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700">Obligado a Llevar Contabilidad *</label>
-                                        <select
-                                            value={data.obligado_contabilidad}
-                                            onChange={(e) => setData('obligado_contabilidad', e.target.value)}
-                                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                        >
-                                            <option value="NO">NO</option>
-                                            <option value="SI">SI</option>
-                                        </select>
-                                        {errors.obligado_contabilidad && <p className="text-sm text-red-600 mt-1">{errors.obligado_contabilidad}</p>}
-                                    </div>
+                                <Campo
+                                    label="Obligado a Llevar Contabilidad *"
+                                    icon={BookOpen}
+                                    error={errors.obligado_contabilidad}
+                                >
+                                    <select
+                                        value={data.obligado_contabilidad}
+                                        onChange={(e) => setData('obligado_contabilidad', e.target.value)}
+                                        className={selectClass}
+                                    >
+                                        <option value="NO">NO</option>
+                                        <option value="SI">SI</option>
+                                    </select>
+                                    <ChevronDown className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-border" />
+                                </Campo>
 
-                                    <div className="md:col-span-2">
-                                        <label className="block text-sm font-medium text-gray-700">Dirección Matriz *</label>
-                                        <input
-                                            type="text"
-                                            value={data.dir_matriz}
-                                            onChange={(e) => setData('dir_matriz', e.target.value)}
-                                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                            required
-                                        />
-                                        {errors.dir_matriz && <p className="text-sm text-red-600 mt-1">{errors.dir_matriz}</p>}
-                                    </div>
+                                <Campo
+                                    label="Dirección Matriz *"
+                                    icon={MapPin}
+                                    error={errors.dir_matriz}
+                                    className="md:col-span-2"
+                                >
+                                    <Input
+                                        type="text"
+                                        value={data.dir_matriz}
+                                        onChange={(e) => setData('dir_matriz', e.target.value)}
+                                        className={inputClass}
+                                        required
+                                    />
+                                </Campo>
 
-                                    <div className="md:col-span-2">
-                                        <label className="block text-sm font-medium text-gray-700">Dirección Establecimiento</label>
-                                        <input
-                                            type="text"
-                                            value={data.dir_establecimiento}
-                                            onChange={(e) => setData('dir_establecimiento', e.target.value)}
-                                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                        />
-                                        {errors.dir_establecimiento && <p className="text-sm text-red-600 mt-1">{errors.dir_establecimiento}</p>}
-                                    </div>
-                                </div>
+                                <Campo
+                                    label="Dirección Establecimiento"
+                                    icon={Warehouse}
+                                    error={errors.dir_establecimiento}
+                                    className="md:col-span-2"
+                                >
+                                    <Input
+                                        type="text"
+                                        value={data.dir_establecimiento}
+                                        onChange={(e) => setData('dir_establecimiento', e.target.value)}
+                                        className={inputClass}
+                                    />
+                                </Campo>
                             </div>
+                        </Seccion>
 
-                            {/* SECCIÓN 2: PARÁMETROS DEL SRI */}
-                            <div>
-                                <h3 className="text-lg font-medium text-gray-900 border-b pb-2 mb-4">
-                                    Parámetros de Facturación Electrónica
-                                </h3>
-                                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700">Cód. Establecimiento *</label>
-                                        <input
-                                            type="text"
-                                            maxLength={3}
-                                            value={data.codigo_establecimiento}
-                                            onChange={(e) => setData('codigo_establecimiento', e.target.value)}
-                                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                            required
-                                        />
-                                        {errors.codigo_establecimiento && <p className="text-sm text-red-600 mt-1">{errors.codigo_establecimiento}</p>}
-                                    </div>
+                        {/* SECCIÓN 2: PARÁMETROS DEL SRI */}
+                        <Seccion
+                            icon={Settings2}
+                            title="Parámetros de Facturación Electrónica"
+                            description="Códigos y ambiente con los que se emitirán tus comprobantes."
+                        >
+                            <div className="grid grid-cols-1 gap-5 md:grid-cols-4">
+                                <Campo
+                                    label="Cód. Establecimiento *"
+                                    icon={Hash}
+                                    error={errors.codigo_establecimiento}
+                                >
+                                    <Input
+                                        type="text"
+                                        maxLength={3}
+                                        value={data.codigo_establecimiento}
+                                        onChange={(e) => setData('codigo_establecimiento', e.target.value)}
+                                        className={`${inputClass} font-mono`}
+                                        required
+                                    />
+                                </Campo>
 
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700">Punto de Emisión *</label>
-                                        <input
-                                            type="text"
-                                            maxLength={3}
-                                            value={data.punto_emision}
-                                            onChange={(e) => setData('punto_emision', e.target.value)}
-                                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                            required
-                                        />
-                                        {errors.punto_emision && <p className="text-sm text-red-600 mt-1">{errors.punto_emision}</p>}
-                                    </div>
+                                <Campo label="Punto de Emisión *" icon={Cpu} error={errors.punto_emision}>
+                                    <Input
+                                        type="text"
+                                        maxLength={3}
+                                        value={data.punto_emision}
+                                        onChange={(e) => setData('punto_emision', e.target.value)}
+                                        className={`${inputClass} font-mono`}
+                                        required
+                                    />
+                                </Campo>
 
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700">Ambiente SRI *</label>
-                                        <select
-                                            value={data.ambiente}
-                                            onChange={(e) => setData('ambiente', e.target.value)}
-                                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                        >
-                                            <option value="1">1 - Pruebas</option>
-                                            <option value="2">2 - Producción</option>
-                                        </select>
-                                        {errors.ambiente && <p className="text-sm text-red-600 mt-1">{errors.ambiente}</p>}
-                                    </div>
+                                <Campo label="Ambiente SRI *" icon={FlaskConical} error={errors.ambiente}>
+                                    <select
+                                        value={data.ambiente}
+                                        onChange={(e) => setData('ambiente', e.target.value)}
+                                        className={selectClass}
+                                    >
+                                        <option value="1">1 - Pruebas</option>
+                                        <option value="2">2 - Producción</option>
+                                    </select>
+                                    <ChevronDown className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-border" />
+                                </Campo>
 
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700">Nro. Contribuyente Especial</label>
-                                        <input
-                                            type="text"
-                                            value={data.contribuyente_especial}
-                                            onChange={(e) => setData('contribuyente_especial', e.target.value)}
-                                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                            placeholder="Opcional"
-                                        />
-                                        {errors.contribuyente_especial && <p className="text-sm text-red-600 mt-1">{errors.contribuyente_especial}</p>}
-                                    </div>
-                                </div>
+                                <Campo
+                                    label="Nro. Contribuyente Especial"
+                                    icon={BadgeCheck}
+                                    error={errors.contribuyente_especial}
+                                >
+                                    <Input
+                                        type="text"
+                                        value={data.contribuyente_especial}
+                                        onChange={(e) => setData('contribuyente_especial', e.target.value)}
+                                        className={inputClass}
+                                        placeholder="Opcional"
+                                    />
+                                </Campo>
                             </div>
+                        </Seccion>
 
-                            {/* SECCIÓN 3: FIRMA ELECTRÓNICA */}
-                            <div>
-                                <h3 className="text-lg font-medium text-gray-900 border-b pb-2 mb-4">
-                                    Firma Electrónica (.p12 / .pfx)
-                                </h3>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700">Archivo de la Firma</label>
+                        {/* SECCIÓN 3: FIRMA ELECTRÓNICA */}
+                        <Seccion
+                            icon={ShieldCheck}
+                            title="Firma Electrónica (.p12 / .pfx)"
+                            description="Certificado digital con el que se firman tus comprobantes."
+                        >
+                            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                                <div className="space-y-2">
+                                    <Label className="text-primary">Archivo de la Firma</Label>
+                                    <div className="relative">
+                                        <FileKey className="pointer-events-none absolute left-3 top-1/2 z-10 size-4 -translate-y-1/2 text-border" />
                                         <input
                                             type="file"
                                             accept=".p12,.pfx"
                                             onChange={(e) => setData('p12_file', e.target.files[0])}
-                                            className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                                            className="block h-9 w-full cursor-pointer rounded-md border border-dashed border-border bg-secondary/40 pl-9 pr-2 text-sm text-primary outline-none transition focus-visible:ring-[3px] focus-visible:ring-ring/50 file:mr-3 file:h-full file:cursor-pointer file:border-0 file:bg-transparent file:px-0 file:text-sm file:font-semibold file:text-primary hover:bg-secondary"
                                         />
-                                        {emisor?.p12_path && (
-                                            <p className="text-xs text-green-600 mt-1">✓ Certificado cargado actualmente en el servidor.</p>
-                                        )}
-                                        {errors.p12_file && <p className="text-sm text-red-600 mt-1">{errors.p12_file}</p>}
                                     </div>
-
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700">Contraseña de la Firma</label>
-                                        <input
-                                            type="password"
-                                            value={data.p12_password}
-                                            onChange={(e) => setData('p12_password', e.target.value)}
-                                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                                            placeholder={emisor?.p12_password ? '•••••••• (Dejar en blanco para conservar)' : 'Contraseña de la firma'}
-                                        />
-                                        {errors.p12_password && <p className="text-sm text-red-600 mt-1">{errors.p12_password}</p>}
-                                    </div>
+                                    {emisor?.p12_path && (
+                                        <p className="mt-1 flex items-center gap-1.5 text-xs font-medium text-primary">
+                                            <CheckCircle2 className="size-4 text-border" />
+                                            Certificado cargado actualmente en el servidor.
+                                        </p>
+                                    )}
+                                    {errors.p12_file && <p className="mt-1 text-sm text-destructive">{errors.p12_file}</p>}
                                 </div>
-                            </div>
 
-                            {/* BOTÓN GUARDAR */}
-                            <div className="flex justify-end pt-4 border-t">
-                                <button
-                                    type="submit"
-                                    disabled={processing}
-                                    className="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50"
-                                >
-                                    {processing ? 'Guardando...' : 'Guardar Configuración'}
-                                </button>
+                                <Campo label="Contraseña de la Firma" icon={KeyRound} error={errors.p12_password}>
+                                    <Input
+                                        type="password"
+                                        value={data.p12_password}
+                                        onChange={(e) => setData('p12_password', e.target.value)}
+                                        className={inputClass}
+                                        placeholder={emisor?.p12_password ? '•••••••• (Dejar en blanco para conservar)' : 'Contraseña de la firma'}
+                                    />
+                                </Campo>
                             </div>
-                        </form>
-                    </div>
+                        </Seccion>
+
+                        {/* BOTÓN GUARDAR */}
+                        <div className="flex items-center justify-between gap-4 rounded-2xl bg-white p-4 ring-1 ring-border/60">
+                            <p className="hidden items-center gap-2 text-sm text-primary/70 sm:flex">
+                                <Receipt className="size-4 text-border" />
+                                Los campos con * son obligatorios.
+                            </p>
+                            <Button type="submit" disabled={processing} size="lg" className="ml-auto">
+                                {processing ? <Loader2 className="animate-spin" /> : <Save />}
+                                {processing ? 'Guardando...' : 'Guardar Configuración'}
+                            </Button>
+                        </div>
+                    </form>
                 </div>
             </div>
             <FlashMessages />

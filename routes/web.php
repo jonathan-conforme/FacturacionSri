@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FacturaController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\EmisorController;
+use App\Http\Controllers\NotaCreditoController;
+
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -31,10 +33,14 @@ Route::middleware('auth')->group(function () {
 
     // Clientes
     Route::resource('clientes', ClienteController::class);
-    
+
     // Emisor
     Route::resource('emisor', EmisorController::class);
+
+    //NotaCredito
+    Route::resource('notas-credito', NotaCreditoController::class);
     });
+
 
 
 require __DIR__.'/auth.php';

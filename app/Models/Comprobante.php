@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Comprobante extends Model
 {
@@ -12,6 +13,7 @@ class Comprobante extends Model
     protected $fillable = [
         'emisor_id',
         'cliente_id',
+        'comprobante_modificado_id',
         'tipo_comprobante',
         'establecimiento',
         'punto_emision',
@@ -22,6 +24,7 @@ class Comprobante extends Model
         'subtotal_15',
         'subtotal_0',
         'monto_iva',
+        'motivo',
         'propina',
         'importe_total',
         'estado_sri',
@@ -45,5 +48,11 @@ class Comprobante extends Model
     public function detalles()
     {
         return $this->hasMany(DetalleComprobante::class);
+    }
+
+       public function comprobanteModificado(): BelongsTo
+    {
+        // Reemplaza 'comprobante_id' si tu clave foránea en la base de datos se llama diferente
+        return $this->belongsTo(Comprobante::class, 'comprobante_modificado_id');
     }
 }

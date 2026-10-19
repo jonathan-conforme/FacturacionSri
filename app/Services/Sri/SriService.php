@@ -2,9 +2,8 @@
 
 namespace App\Services\Sri;
 
-use SoapClient;
 use Exception;
-
+use SoapClient;
 
 class SriService
 {
@@ -75,15 +74,20 @@ class SriService
 
         return $digito;
     }
+
     public function enviarComprobante(string $xml, string $ambiente = '1'): array
     {
+
+        set_time_limit(120);
+        ini_set('default_socket_timeout', '90');
+
         try {
             $client = new SoapClient($this->urls[$ambiente]['recepcion'], [
-            'trace' => 1,
-            'exceptions' => true,
-            'connection_timeout' => 15,
-        ]);
-          $response = $client->validarComprobante(['xml' => $xml]);
+                'trace' => 1,
+                'exceptions' => true,
+                'connection_timeout' => 15,
+            ]);
+            $response = $client->validarComprobante(['xml' => $xml]);
 
             $estado = $response->RespuestaRecepcionComprobante->estado ?? 'DESCONOCIDO';
 
@@ -91,32 +95,36 @@ class SriService
                 return ['estado' => 'RECIBIDA', 'errores' => []];
             } else {
                 $errores = $this->extraerErrores($response->RespuestaRecepcionComprobante->comprobantes->comprobante ?? null);
+
                 return ['estado' => 'DEVUELTA', 'errores' => $errores];
             }
         } catch (Exception $e) {
             return [
                 'estado' => 'DEVUELTA',
-                'errores' => ['Error SOAP Recepción: ' . $e->getMessage()]
+                'errores' => ['Error SOAP Recepción: '.$e->getMessage()],
             ];
         }
     }
 
     public function autorizarComprobante(string $claveAcceso, string $ambiente = '1'): array
     {
+        set_time_limit(120);
+        ini_set('default_socket_timeout', '90');
+
         try {
             $client = new SoapClient($this->urls[$ambiente]['autorizacion'], ['trace' => 1, 'exceptions' => true]);
             $response = $client->autorizacionComprobante(['claveAccesoComprobante' => $claveAcceso]);
 
             $autorizaciones = $response->RespuestaAutorizacionComprobante->autorizaciones->autorizacion ?? null;
 
-            if (!$autorizaciones) {
+            if (! $autorizaciones) {
                 return [
                     'estado' => 'NO AUTORIZADO',
-                    'errores' => ['Sin respuesta de autorización del SRI.']
+                    'errores' => ['Sin respuesta de autorización del SRI.'],
                 ];
             }
 
-            if (!is_array($autorizaciones)) {
+            if (! is_array($autorizaciones)) {
                 $autorizaciones = [$autorizaciones];
             }
 
@@ -128,18 +136,18 @@ class SriService
                     'estado' => 'AUTORIZADO',
                     'numeroAutorizacion' => $aut->numeroAutorizacion,
                     'fechaAutorizacion' => $aut->fechaAutorizacion,
-                    'errores' => []
+                    'errores' => [],
                 ];
             } else {
                 return [
                     'estado' => $estado,
-                    'errores' => $this->extraerErrores($aut)
+                    'errores' => $this->extraerErrores($aut),
                 ];
             }
         } catch (Exception $e) {
             return [
                 'estado' => 'ERROR_SOAP',
-                'errores' => ['Error SOAP Autorización: ' . $e->getMessage()]
+                'errores' => ['Error SOAP Autorización: '.$e->getMessage()],
             ];
         }
     }
@@ -149,7 +157,9 @@ class SriService
         $errores = [];
         if (isset($objeto->mensajes->mensaje)) {
             $mensajes = $objeto->mensajes->mensaje;
-            if (!is_array($mensajes)) $mensajes = [$mensajes];
+            if (! is_array($mensajes)) {
+                $mensajes = [$mensajes];
+            }
 
             foreach ($mensajes as $m) {
                 $id = $m->identificador ?? '';
@@ -160,6 +170,7 @@ class SriService
         } else {
             $errores[] = 'Error desconocido en el SRI.';
         }
-        return $errores;
+
+          return $errores;
     }
 }

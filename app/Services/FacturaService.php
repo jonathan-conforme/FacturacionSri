@@ -152,7 +152,7 @@ class FacturaService
 
             $comprobante->update([
                 'estado_sri' => $resAutorizacion['estado'],
-                'numero_autorizacion' => $resAutorizacion['numeroAutorizacion'] ?? null,
+               
                 'fecha_autorizacion' => $resAutorizacion['fechaAutorizacion'] ?? null,
                 'mensajes_sri' => json_encode($resAutorizacion['errores'] ?? [], JSON_UNESCAPED_UNICODE),
             ]);
