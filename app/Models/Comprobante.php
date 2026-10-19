@@ -13,6 +13,7 @@ class Comprobante extends Model
     protected $fillable = [
         'emisor_id',
         'cliente_id',
+        'comprobante_modificado_id',
         'tipo_comprobante',
         'establecimiento',
         'punto_emision',
@@ -23,6 +24,7 @@ class Comprobante extends Model
         'subtotal_15',
         'subtotal_0',
         'monto_iva',
+        'motivo',
         'propina',
         'importe_total',
         'estado_sri',
