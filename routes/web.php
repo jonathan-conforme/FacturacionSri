@@ -7,6 +7,9 @@ use App\Http\Controllers\FacturaController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\EmisorController;
 use App\Http\Controllers\NotaCreditoController;
+use App\Http\Controllers\NotaDebitoController;
+use App\Http\Controllers\GuiaRemisionController;
+use App\Http\Controllers\RetencionController;
 
 use Inertia\Inertia;
 
@@ -41,6 +44,15 @@ Route::middleware('auth')->group(function () {
     Route::resource('notas-credito', NotaCreditoController::class);
     });
 
+    //notadebito
+    Route::get('/notas-debito/crear{factura?}', [NotaDebitoController::class, 'create'])->name('notas-debito.create');
+    Route::post('/notas-debito', [NotaDebitoController::class, 'store'])->name('notas-debito.store');
 
+    //GuiaRemision
+    Route::resource('guias', GuiaRemisionController::class);
+    Route::post('guias/{guia}/procesar-sri', [GuiaRemisionController::class, 'procesarSri'])->name('guias.procesarSri');
+
+    //Retencion
+    Route::resource('retenciones', RetencionController::class);
 
 require __DIR__.'/auth.php';

@@ -19,15 +19,28 @@ class NotaCreditoController extends Controller
      * Formulario para emitir una nota de crédito sobre una factura.
      * La factura llega por query string: /notas-credito/create?factura=ID
      */
-    public function create(Request $request): Response
+    public function create(Request $request, $facturaId = null)
     {
-        $factura = Comprobante::with(['cliente', 'detalles'])
-            ->findOrFail($request->query('factura'));
+        // 1. Obtener ID de la factura (funciona tanto con ?factura=31 como con /31)
+        $id = $facturaId ?? $request->query('factura');
 
-        abort_unless($factura->tipo_comprobante === '01', 404);
+        if (! $id) {
+            return redirect()->route('facturas.index')
+                ->with('error', 'Debes seleccionar una factura válida para emitir una Nota de Crédito.');
+        }
+
+        // 2. Cargar la factura junto a sus detalles y cliente
+        $comprobante = Comprobante::with(['cliente', 'detalles'])
+            ->where('tipo_comprobante', '01')
+            ->find($id);
+
+        if (! $comprobante) {
+            return redirect()->route('facturas.index')
+                ->with('error', 'No se encontró la factura seleccionada.');
+        }
 
         return Inertia::render('NotasCredito/Create', [
-            'factura' => $factura,
+            'factura' => $comprobante,
         ]);
     }
 

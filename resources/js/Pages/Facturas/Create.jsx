@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import FlashMessages from '@/Components/FlashMessages';
 import { Head, useForm } from '@inertiajs/react';
@@ -72,6 +72,33 @@ export default function Create({ auth, clientes, impuestos }) {
             },
         ],
     });
+
+    // Estado para controlar el tiempo transcurrido durante la petición
+    const [elapsedSeconds, setElapsedSeconds] = useState(0);
+
+    useEffect(() => {
+        let interval = null;
+        if (processing) {
+            setElapsedSeconds(0);
+            interval = setInterval(() => {
+                setElapsedSeconds((prev) => prev + 1);
+            }, 1000);
+        } else {
+            setElapsedSeconds(0);
+        }
+        return () => clearInterval(interval);
+    }, [processing]);
+
+    // Mensaje dinámico según los segundos que lleva procesando
+    const getLoadingMessage = () => {
+        if (elapsedSeconds < 5) {
+            return 'Generando XML, firmando digitalmente y enviando al SRI...';
+        } else if (elapsedSeconds < 12) {
+            return 'El servidor del SRI está respondiendo con lentitud. Por favor no cierres la página...';
+        } else {
+            return 'El portal del SRI presenta un alto tráfico en este momento. Continuamos procesando la autorización...';
+        }
+    };
 
     const handleAddItem = () => {
         setData('items', [
@@ -149,6 +176,24 @@ export default function Create({ auth, clientes, impuestos }) {
             }
         >
             <Head title="Crear Factura" />
+
+            {/* Overlay de Carga Modal */}
+            {processing && (
+                <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/60 backdrop-blur-xs p-4 text-center">
+                    <div className="w-full max-w-md space-y-4 rounded-2xl border border-border bg-white p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+                        <div className="flex justify-center">
+                            <Loader2 className="size-12 animate-spin text-primary" />
+                        </div>
+                        <h3 className="text-lg font-semibold text-primary">Procesando Comprobante</h3>
+                        <p className="text-sm text-gray-600 transition-all duration-300">
+                            {getLoadingMessage()}
+                        </p>
+                        <div className="text-xs font-mono text-gray-400">
+                            Tiempo transcurrido: {elapsedSeconds}s
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <div className="min-h-screen bg-secondary/40 py-10">
                 <div className="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
@@ -311,7 +356,7 @@ export default function Create({ auth, clientes, impuestos }) {
                                                         <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 size-4 -translate-y-1/2 text-border" />
                                                     </div>
                                                 </TableCell>
-                                                <TableCell className="p-2 font-semibold tabular-nums text-primary">${subtotalRow}</TableCell>
+                                                <TableCell className="p-2 font-semibold tabular-nums text-primary">\${subtotalRow}</TableCell>
                                                 <TableCell className="p-2">
                                                     {data.items.length > 1 && (
                                                         <Button

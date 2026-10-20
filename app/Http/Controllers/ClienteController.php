@@ -21,7 +21,7 @@ class ClienteController extends Controller
   public function index(): Response
     {
         return Inertia::render('Clientes/Index', [
-            'clientes' => Cliente::with('tipoIdentificacionRel')->latest()->paginate(10)
+            'clientes' => Cliente::with('tipoIdentificacion')->latest()->paginate(15)
         ]);
     }
 

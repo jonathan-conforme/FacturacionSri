@@ -18,7 +18,7 @@ class Cliente extends Model
         'telefono',
     ];
 
-    public function tipoIdentificacionRel()
+    public function tipoIdentificacion()
     {
         return $this->belongsTo(TipoIdentificacion::class, 'tipo_identificacion_codigo', 'codigo');
     }

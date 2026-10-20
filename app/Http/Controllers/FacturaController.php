@@ -37,7 +37,7 @@ class FacturaController extends Controller
                 $query->where('estado_sri', $estado);
             })
             ->orderBy('id', 'desc')
-            ->paginate(10)
+            ->paginate(15)
             ->withQueryString();
 
         return Inertia::render('Facturas/Index', [
@@ -62,11 +62,11 @@ class FacturaController extends Controller
        try {
             $comprobante = $this->facturaService->crearYProcesarFactura($request->validated());
 
-            return redirect()
-                ->route('facturas.create')
-                ->with('success', "Factura N° {$comprobante->secuencial} generada exitosamente.");
-        } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Error al procesar la factura: ' . $e->getMessage()]);
-        }
+           return redirect()->route('facturas.index')
+            ->with('success', 'Comprobante procesado con éxito.');
+    } catch (\Exception $e) {
+        return redirect()->back()
+            ->with('error', 'No se pudo completar el proceso: ' . $e->getMessage());
+    }
     }
 }

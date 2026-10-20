@@ -38,7 +38,8 @@ const ItemMenu = ({ icon: Icon, active = false, children, ...props }) => (
 );
 
 export default function AuthenticatedLayout({ header, children }) {
-    const user = usePage().props.auth.user;
+   const { auth } = usePage().props;
+const user = auth?.user;
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
@@ -102,6 +103,32 @@ export default function AuthenticatedLayout({ header, children }) {
                         >
                             Facturas emitidas
                         </ItemMenu>
+
+                          <ItemMenu
+                            href={route('notas-debito.create')}
+                            active={route().current('notas-debito.create')}
+                            icon={ReceiptText}
+                        >
+                            Notas Debito
+                        </ItemMenu>
+
+                        <ItemMenu
+                            href={route('guias.index')}
+                            active={route().current('guias.index')}
+                            icon={ReceiptText}
+                        >
+                            Guia de Remisión
+                        </ItemMenu>
+
+                        <ItemMenu
+                            href={route('retenciones.create')}
+                            active={route().current('retenciones.create')}
+                            icon={ReceiptText}
+                        >
+                            Retenciones
+                        </ItemMenu>
+
+
                     </Categoria>
 
                     <Categoria titulo="Administración">
@@ -132,17 +159,24 @@ export default function AuthenticatedLayout({ header, children }) {
                 </nav>
 
                 {/* Usuario */}
+
+                {/* Usuario */}
                 <div className="shrink-0 border-t border-border/30 p-4">
                     <div className="flex items-center gap-3 rounded-xl bg-white/10 p-3">
                         <span className="grid size-10 shrink-0 place-items-center rounded-full bg-secondary text-sm font-bold text-primary">
-                            {user.name?.trim()?.[0]?.toUpperCase() ?? '?'}
+                            {user?.name?.trim()?.[0]?.toUpperCase() ?? '?'}
                         </span>
                         <div className="min-w-0">
-                            <p className="truncate text-sm font-semibold">{user.name}</p>
-                            <p className="truncate text-xs text-primary-foreground/70">{user.email}</p>
+                            <p className="truncate text-sm font-semibold">
+                                {user?.name ?? 'Usuario'}
+                            </p>
+                            <p className="truncate text-xs text-primary-foreground/70">
+                                {user?.email ?? ''}
+                            </p>
                         </div>
                     </div>
                 </div>
+
             </aside>
 
             {/* CONTENIDO */}
